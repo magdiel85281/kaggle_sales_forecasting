@@ -28,6 +28,23 @@ class SalesData(object):
         df['year_month'] = df['year'].astype(str) + df['month']
         self.daily_sales = df
 
+    def monthly_agg(self):
+        """Get sum of item_cnt_day by month, shop, item."""
+        print('Aggregating for monthly sales...')
+        gb_cols = ['date_block_num', 'year', 'month', 'year_month',
+                   'shop_id', 'item_id']
+        monthly_counts = \
+            self.daily_sales.groupby(gb_cols)['item_cnt_day'] \
+                .sum().reset_index()
+        monthly_avg_price = \
+            self.daily_sales.groupby(gb_cols)['item_price'] \
+                .mean().reset_index()
+        self.monthly_sales = pd.merge(
+            monthly_counts, monthly_avg_price, on=gb_cols, how='inner')
+        self.monthly_sales.rename(
+            columns={'item_cnt_day': 'item_cnt_month',
+                     'item_price': 'avg_price'}, inplace=True)
+
     def set(self):
         """Set data."""
         self.shops = pd.read_csv('data/shops.csv')
@@ -40,22 +57,7 @@ class SalesData(object):
         print('Formatting sales data...')
         self.format_sales()
         self.break_out_period_data()
-
-    def monthly_agg(self):
-        """Get sum of item_cnt_day by month, shop, item."""
-        gb_cols = ['date_block_num', 'year', 'month', 'year_month',
-                   'shop_id', 'item_id']
-        monthly_counts = \
-            self.daily_sales.groupby(gb_cols)['item_cnt_day'] \
-                .sum().reset_index()
-        monthly_avg_price = \
-            self.daily_sales.groupby(gb_cols)['item_price'] \
-                .mean().reset_index()
-        self.monthly_sales = pd.merge(
-            monthly_counts, monthly_avg_price, on=gb_cols, how='inner')
-        self.monthly_sales.rename(
-            columns={'item_cnt_day': 'item_cnt_month', 
-                     'item_price': 'avg_price'}, inplace=True)
+        self.monthly_agg()
 
     def calc_sales(self):
         """Add column for daily and monthly sales to respective dataframes."""
