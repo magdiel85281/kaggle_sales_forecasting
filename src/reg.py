@@ -109,7 +109,7 @@ def item_avg(df, item, shop):
     item_month_df = df.loc[
         (df['month'] == '11') & (df['item_id'] == item)]
     if item_month_df.shape[0] > 0:
-        print('\t\tUsing Nov all shops avg item count.')
+        # print('\t\tUsing Nov all shops avg item count.')
         avg_item_cnt = item_month_df['item_cnt_month'].mean()
     else: 
         item_df = df.loc[(df['item_id'] == item)]
@@ -120,11 +120,11 @@ def item_avg(df, item, shop):
             shop_month_df = df.loc[
                 (df['month'] == '11') & (df['shop_id'] == shop)]
             if shop_month_df.shape[0] > 0:
-                print('\t\tUsing Nov shop all item avg count.')
+                # print('\t\tUsing Nov shop all item avg count.')
                 avg_item_cnt = shop_month_df['item_cnt_month'].mean()
             else:
                 shop_df = df.loc[(df['shop_id'] == shop)]
-                print('\t\tUsing shop all item avg count.')
+                # print('\t\tUsing shop all item avg count.')
                 avg_item_cnt = shop_df['item_cnt_month'].mean()
     return avg_item_cnt
 
@@ -169,10 +169,11 @@ if __name__ == '__main__':
                 output_list.append({'ID': row_id, 'item_cnt_month': 0})
 
         else: 
-            print(f'{row}: New shop-item data for shop {shop_id} and item {item_id}')
-            avg_item_cnt = item_avg(sales, item_id, shop_id)
-            print(f'\t\tAvg count: {avg_item_cnt}')
-            output_list.append({'ID': row_id, 'item_cnt_month': avg_item_cnt})
+            # print(f'{row}: New shop-item data for shop {shop_id} and item {item_id}')
+            # avg_item_cnt = item_avg(sales, item_id, shop_id)
+            # print(f'\t\tAvg count: {avg_item_cnt}')
+            # output_list.append({'ID': row_id, 'item_cnt_month': avg_item_cnt})
+            output_list.append({'ID': row_id, 'item_cnt_month': 0})
 
         if row % 1000 == 0:
             print('\n***\n***\n\t{:.1f}% complete...\n***\n***\n'\
