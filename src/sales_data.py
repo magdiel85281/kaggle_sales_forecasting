@@ -12,6 +12,10 @@ class SalesData(object):
         self.item_categories = None
         self.items = None
 
+    def daily_drop_outliers(self, daily_threshold):
+        self.daily_sales = self.daily_sales.loc[
+            self.daily_sales['item_cnt_day'] < daily_threshold]
+
     def format_sales(self):
         """Format columns."""
         df = self.daily_sales.copy()
@@ -45,10 +49,11 @@ class SalesData(object):
             columns={'item_cnt_day': 'item_cnt_month',
                      'item_price': 'avg_price'}, inplace=True)
 
-    def set(self):
+    def set(self, daily_threshold=500):
         """Set data."""
         self.shops = pd.read_csv('data/shops.csv')
         self.daily_sales = pd.read_csv('data/sales_train.csv')
+        self.daily_drop_outliers(daily_threshold)
         self.item_categories = pd.read_csv('data/item_categories.csv')
         itms = pd.read_csv('data/items.csv')
         self.items = pd.merge(
