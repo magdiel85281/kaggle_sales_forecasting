@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
-import nlp as nlp
+import src.nlp as nlp
+# import src.gb_lag as lag 
 
 
 class SalesData(object):
@@ -11,6 +12,7 @@ class SalesData(object):
         self.shops = None
         self.item_categories = None
         self.items = None
+        self.lag_df = None
 
     def daily_drop_outliers(self, daily_threshold):
         self.daily_sales = self.daily_sales.loc[
@@ -126,3 +128,7 @@ class SalesData(object):
         df.loc[mask, 'item_cnt_month'] = 0
         df.set_index(keys='plot_date', inplace=True)
         return df
+
+    def set_lag(self):
+        model_input = lag.feature_matrix(daily_threshold=500)
+        self.lag_df = lag.stack_lag_dfs(model_input)
