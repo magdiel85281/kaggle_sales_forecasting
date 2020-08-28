@@ -32,7 +32,7 @@ class ModelInput(object):
 
         self.prev_years_df = None
         self.current_year_df = None
-        
+
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -106,14 +106,43 @@ class ModelInput(object):
         self.prev_years_df = pd.concat([input_2013, input_2014], axis=0)
         self.current_year_df = input_2015.copy()
 
-    
-    def mi_train_test_split(self, test_size=0.20, random_state=123):
+
+    def train_test_split(self, test_size=0.20, random_state=123):
+        """Split the previous years data into a training set and a
+        test set.
+
+        :param test_size: proportion of data to allocate to the test
+            set, defaults to 0.20
+        :type test_size: float, optional
+        :param random_state: random state, defaults to 123
+        :type random_state: int, optional
+        """
         X = self.prev_years_df.iloc[:, :-1].copy()
         y = self.prev_years_df.iloc[:, -1:].copy()
         self.X_train, self.X_test, self.y_train, self.y_test = \
-            train_test_split(X, y, 
-                test_size=test_size, 
+            train_test_split(X, y,
+                test_size=test_size,
                 random_state=random_state)
+
+
+    def scale_min_max(self):
+        """Scale data using MinMaxScaler."""
+        sc_X = MinMaxScaler()
+        self.X_train = sc_X.fit_transform(self.X_train)
+        self.X_test = sc_X.transform(self.X_test)
+
+        sc_y = MinMaxScaler()
+        self.y_train = sc_X.fit_transform(self.y_train)
+
+
+    def reshape(self):
+        """Reshape data as a 3D array for input into LSTM model."""
+        self.X_train = np.reshape(
+            self.X_train,
+            (self.X_train.shape[0], 1, self.X_train.shape[1]))
+        self.X_test = np.reshape(
+            self.X_test,
+            (self.X_test.shape[0], 1, self.X_test.shape[1]))
 
 
 class LSTMModel(object):
@@ -128,7 +157,7 @@ class LSTMModel(object):
 
     def add(self):
         self.model.add(LSTM(
-            units=1, 
+            units=1,
             batch_input_shape=(
                 1, self.X_train.shape[1], self.X_train.shape[2]),
             # return_sequences=True,
@@ -143,8 +172,8 @@ class LSTMModel(object):
 
 
     def fit(self, epochs=30):
-        self.model.fit(X_train, y_train, epochs=epochs, batch_size=1, 
-            verbose=1, 
+        self.model.fit(X_train, y_train, epochs=epochs, batch_size=1,
+            verbose=1,
             shuffle=False)
 
 
