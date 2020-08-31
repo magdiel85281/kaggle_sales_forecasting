@@ -1,9 +1,8 @@
-# kaggle_sales_forecasting
-Kaggle Predict Future Sales Kudos Competition
+## Overview
+LSTM Model for predicting sales for the Kaggle Predict Future Sales Kudos Competition.
 
 ---
 
-## Overview
 The code in this repo represents an attempt to predict sales using a Long Short-Term Memory (LSTM) model from the Kaggle kudos competition [Predict Future Sales](https://www.kaggle.com/c/competitive-data-science-predict-future-sales/overview).
 
 ---
