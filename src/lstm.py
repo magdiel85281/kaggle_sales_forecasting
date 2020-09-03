@@ -151,12 +151,18 @@ class ModelInput(object):
 
     def reshape(self):
         """Reshape data as a 3D array for input into LSTM model."""
+        # self.X_train = np.reshape(
+        #     self.X_train,
+        #     (self.X_train.shape[0], 1, self.X_train.shape[1]))
+        # self.X_test = np.reshape(
+        #     self.X_test,
+        #     (self.X_test.shape[0], 1, self.X_test.shape[1]))
         self.X_train = np.reshape(
             self.X_train,
-            (self.X_train.shape[0], 1, self.X_train.shape[1]))
+            (self.X_train.shape[0], self.X_train.shape[1], 1))
         self.X_test = np.reshape(
             self.X_test,
-            (self.X_test.shape[0], 1, self.X_test.shape[1]))
+            (self.X_test.shape[0], self.X_test.shape[1], 1))
 
 
     def test_results(self, y_pred):
@@ -184,30 +190,21 @@ class LSTMModel(object):
         with a 20% dropout layer, and an output layer."""
 
         self.model.add(LSTM(
-            units=30,
-            batch_input_shape=(
-                1, self.X_train.shape[1], self.X_train.shape[2]),
-            return_sequences=True,
+            units=50,
+            input_shape=(self.X_train.shape[1], 1),
+            return_sequences=True
             # return_state=True,
-            stateful=True))
+            # stateful=True
+            ))
         self.model.add(Dropout(0.2))
 
         self.model.add(LSTM(
-            units=30,
-            batch_input_shape=(
-                1, self.X_train.shape[1], self.X_train.shape[2]),
-            return_sequences=True,
+            units=50,
+            input_shape=(self.X_train.shape[1], 1),
+            return_sequences=False
             # return_state=True,
-            stateful=True))
-        self.model.add(Dropout(0.2))
-
-        self.model.add(LSTM(
-            units=30,
-            batch_input_shape=(
-                1, self.X_train.shape[1], self.X_train.shape[2]),
-            return_sequences=False,
-            # return_state=True,
-            stateful=True))
+            # stateful=True
+            ))
         self.model.add(Dropout(0.2))
 
         self.model.add(Dense(units=1))
@@ -226,7 +223,7 @@ class LSTMModel(object):
             self.X_train,
             self.y_train,
             epochs=epochs,
-            batch_size=1,
+            batch_size=50,
             verbose=1,
             shuffle=False)
 
@@ -241,7 +238,7 @@ class LSTMModel(object):
         :rtype: np.array
         """
 
-        return self.model.predict(X_test, batch_size=1)
+        return self.model.predict(X_test, batch_size=50)
 
 
 
