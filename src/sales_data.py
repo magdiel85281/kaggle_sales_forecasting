@@ -227,3 +227,11 @@ class SalesData(object):
     def set_lag(self):
         model_input = lag.feature_matrix(daily_threshold=500)
         self.lag_df = lag.stack_lag_dfs(model_input)
+
+
+if __name__ == '__main__':
+    sd = SalesData()
+
+    sd.set_sales_data()
+    sd.merge_shop_data_to_sales()
+    sd.merge_item_data_to_sales()
