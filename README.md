@@ -1,5 +1,5 @@
 ## Overview
-LSTM Model for predicting sales for the Kaggle Predict Future Sales Kudos Competition.
+In this repo, several different approaches were used to attempt to predict sales for the Kaggle Predict Future Sales Kudos Competition: linear and polynomial regression, gradient boosting regression, ARIMA, and long short-term memory (LSTM). Ultimately, the focus here was implementation of a LSTM model.
 
 ---
 
@@ -43,7 +43,7 @@ Also within the data was something that translated as "OUTGOING". Not sure what 
 
 ![Digital Trend](img/digital.png)
 
-"Mega" shops show a similar decline in item counts, but "Mall" shops seemed to hold steady with a slight rise in sales dollars.
+Slicing the data a different way, "Mega" shops show a similar decline in item counts, but "Mall" shops seemed to hold steady with a slight rise in sales dollars.
 
 ![Mega Trend](img/mega.png)
 ![Mall Trend](img/mall.png)
