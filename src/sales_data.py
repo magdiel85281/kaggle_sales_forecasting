@@ -164,10 +164,37 @@ class SalesData(object):
         self.merge_shops_to_monthly()
 
 
+    def breakout_major_cats(self):
+        """Sequence to break out major categories."""
+        # split on hyphen
+        mask = self.item_categories[
+            'item_category_name'].str.contains(' -')
+        self.item_categories.loc[mask, 'major_category'] = \
+            self.item_categories.loc[
+                mask, 'item_category_name'].apply(
+                    lambda x: x.split(' -')[0])
+
+        # get description before parenthesis
+        mask1 = self.item_categories[
+            'item_category_name'].str.contains(' \(')
+        mask2 = self.item_categories['major_category'].isna()
+        self.item_categories.loc[mask1 & mask2, 'major_category'] = \
+        self.item_categories.loc[
+            mask1 & mask2, 'item_category_name'].apply(
+                lambda x: x.split(' (')[0])
+
+        # whatever is left
+        mask = self.item_categories['major_category'].isna()
+        self.item_categories.loc[mask, 'major_category'] = \
+            self.item_categories.loc[mask, 'item_category_name']
+
+
     def fetch_item_data(self):
         """Fetch item category data from csv files."""
         self.item_categories = pd.read_csv('../data/item_categories.csv')
         itms = pd.read_csv('../data/items.csv')
+
+        self.breakout_major_cats()
 
         self.items = pd.merge(
             itms, self.item_categories, on='item_category_id', how='inner')
